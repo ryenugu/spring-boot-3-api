@@ -15,20 +15,20 @@ import java.util.function.Function;
 public class ProductService {
     public AccountInfo startApplication(ApplicationRequest applicationRequest) {
 
-        // Create a map to associate each animal type with a corresponding builder
+        // Create a map to associate each product type with a corresponding builder
         Map<String, Function<ApplicationRequest, AccountInfo>> accountBuilder = new HashMap<>();
         accountBuilder.put("sdb", this::mapSDB);
         accountBuilder.put("hys", this::mapHYS);
         accountBuilder.put("cod", this::mapCOD);
 
 
-        // Retrieve the appropriate builder based on the animal type
+        // Retrieve the appropriate builder based on the product type
         Function<ApplicationRequest, AccountInfo> builder = accountBuilder
                 .getOrDefault(applicationRequest.getProduct().getProductCode(), inputApplicationRequest -> AccountInfo.builder()
                         .errorMsg("Unknown Product Type")
                         .build());
 
-        // Build the composite animal using the selected builder
+        // Build the composite product using the selected builder
         return builder.apply(applicationRequest);
     }
 
