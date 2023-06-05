@@ -1,5 +1,6 @@
 package org.frolicbits.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.frolicbits.controller.models.ApplicationRequest;
 import org.frolicbits.controller.models.AccountInfo;
 import org.frolicbits.service.util.NameConcatenator;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class ProductService {
     public AccountInfo startApplication(ApplicationRequest applicationRequest) {
 
@@ -36,6 +38,7 @@ public class ProductService {
                 .accountName("COD account")
                 .accountType("Certificate of Deposit")
                 .accountNumber("123456789")
+                .accountOwner(mapName(inputApplicationRequest))
                 .codSpecificResponseFields(AccountInfo.CODSpecificResponseFields.builder()
                         .codInterestRate("1.5")
                         .build())
@@ -48,6 +51,7 @@ public class ProductService {
                 .accountName("HYS account")
                 .accountType("High Yield Savings")
                 .accountNumber("987654321")
+                .accountOwner(mapName(inputApplicationRequest))
                 .hysSpecificResponseFields(AccountInfo.HYSSpecificResponseFields.builder()
                         .hysSavingInterestRate("1.5")
                         .build())
@@ -60,13 +64,17 @@ public class ProductService {
                 .accountName("SDB account")
                 .accountType("Safe Deposit Box")
                 .accountNumber("123456789")
-                .accountOwner(NameConcatenator.concatenate(
-                        inputApplicationRequest.getApplicants().get(0).getApplicantFirstName(),
-                        inputApplicationRequest.getApplicants().get(0).getApplicantLastName(),
-                        inputApplicationRequest.getApplicants().get(0).getApplicantMiddleName()))
+                .accountOwner(mapName(inputApplicationRequest))
                 .sdbSpecificResponseFields(AccountInfo.SDBSpecificResponseFields.builder()
                         .sdbMonthlyFee("10")
                         .build())
                 .build();
+    }
+
+    private String mapName(ApplicationRequest inputApplicationRequest) {
+        return NameConcatenator.concatenate(
+                inputApplicationRequest.getApplicants().get(0).getApplicantFirstName(),
+                inputApplicationRequest.getApplicants().get(0).getApplicantLastName(),
+                inputApplicationRequest.getApplicants().get(0).getApplicantMiddleName());
     }
 }
