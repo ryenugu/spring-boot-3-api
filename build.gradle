@@ -18,7 +18,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.projectlombok:lombok:1.18.26'
-    implementation 'org.springframework.boot:spring-boot-devtools'
+
     //lombok support
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
