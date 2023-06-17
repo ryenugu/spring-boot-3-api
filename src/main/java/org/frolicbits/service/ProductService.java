@@ -1,19 +1,43 @@
 package org.frolicbits.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.frolicbits.controller.models.ApplicationRequest;
 import org.frolicbits.controller.models.AccountInfo;
 import org.frolicbits.service.util.NameConcatenator;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.CacheControl;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ProductService {
+
+    private static final String CACHE_KEY_PREFIX = "product";
+    private final RedisTemplate<String, AccountInfo> redisTemplate;
+
+    @Cacheable(value = "productCache", key = "#applicationRequest.product.productCode", cacheManager = "cacheManager")
     public AccountInfo startApplication(ApplicationRequest applicationRequest) {
+        // Check if posts are present in the cache
+        String cacheKey = CACHE_KEY_PREFIX + "all";
+
+        AccountInfo posts = redisTemplate.opsForValue().get(cacheKey);
+
+        if (posts != null) {
+            log.info("Cache hit");
+
+            // Save them in the cache
+            redisTemplate.opsForValue().set(cacheKey, posts);
+        }
+        log.info("Cache miss");
 
         // Create a map to associate each product type with a corresponding builder
         Map<String, Function<ApplicationRequest, AccountInfo>> accountBuilder = new HashMap<>();

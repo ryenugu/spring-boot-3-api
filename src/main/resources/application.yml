@@ -2,8 +2,12 @@
 logging:
   level:
     org.frolicbits.controller: DEBUG
+    org.springframework.web: TRACE
 #enable live reload
 spring:
   devtools:
     livereload:
       enabled: true
+  redis:
+    host: localhost
+    port: 6379
